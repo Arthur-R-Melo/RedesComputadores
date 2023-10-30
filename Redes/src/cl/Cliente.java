@@ -1,4 +1,4 @@
-package redes;
+package cl;
 
 import java.net.Socket;
 import java.util.ArrayList;

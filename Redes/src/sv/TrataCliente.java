@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import redes.Mensagem;
+import cl.Mensagem;
 
 public class TrataCliente implements Runnable {
 		

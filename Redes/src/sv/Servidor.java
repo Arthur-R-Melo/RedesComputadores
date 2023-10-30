@@ -1,9 +1,11 @@
-package redes;
+package sv;
 
+import sv.TrataCliente;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.net.ServerSocket;
 import java.io.IOException;
+import redes.Mensagem;
 
 public class Servidor {
 	

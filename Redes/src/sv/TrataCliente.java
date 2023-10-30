@@ -1,10 +1,11 @@
-package redes;
+package sv;
 
 import java.net.Socket;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import redes.Mensagem;
 
 public class TrataCliente implements Runnable {
 		

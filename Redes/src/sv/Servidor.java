@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.net.ServerSocket;
 import java.io.IOException;
-import redes.Mensagem;
+import cl.Mensagem;
 
 public class Servidor {
 

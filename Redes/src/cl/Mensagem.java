@@ -1,4 +1,4 @@
-package redes;
+package cl;
 
 import java.io.Serializable;
 

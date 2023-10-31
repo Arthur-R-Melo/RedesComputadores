@@ -42,6 +42,7 @@ public class TrataCliente implements Runnable {
             String comand[];
             do {
                 mensagem = (Mensagem) receber_mensagem();
+                System.out.println(mensagem);
                 comand = mensagem.getTexto().split(";");
 
                 if (comand[0].equals("ENCERRAR")) {
@@ -57,6 +58,7 @@ public class TrataCliente implements Runnable {
                     }
                 }
             } while (!mensagem.equals("ENCERRAR"));
+            System.out.println("\u001b[32m" + soquete_cliente + " - Desconectou!");
             finalizar();
         } catch (Exception e) {
             e.printStackTrace();

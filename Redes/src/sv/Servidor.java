@@ -1,6 +1,5 @@
 package sv;
 
-import sv.TrataCliente;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.net.ServerSocket;
@@ -30,13 +29,14 @@ public class Servidor {
         while (true) {
             try {
                 soqueteCliente = servidor.soquete_servidor.accept();
+                System.out.println("\u001b[32m" + soqueteCliente + " - Conectou!");
                 new Thread(new TrataCliente(soqueteCliente, servidor.mensagens)).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-
+    
     public static ArrayList<String> getClientes() {
         return clientes;
     }

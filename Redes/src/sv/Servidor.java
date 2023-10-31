@@ -11,7 +11,7 @@ public class Servidor {
 
     private ServerSocket soquete_servidor;
     private ArrayList<Mensagem> mensagens;
-    private static ArrayList<TrataCliente> clientes;
+    private static ArrayList<String> clientes;
 
     public Servidor(int porta) throws Exception {
         super();
@@ -30,16 +30,18 @@ public class Servidor {
         while (true) {
             try {
                 soqueteCliente = servidor.soquete_servidor.accept();
-                Servidor.clientes.add(new TrataCliente(soqueteCliente, servidor.mensagens));
-                new Thread(Servidor.clientes.get(Servidor.clientes.size()-1)).start();
+                new Thread(new TrataCliente(soqueteCliente, servidor.mensagens)).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static ArrayList<TrataCliente> getClientes() {
+    public static ArrayList<String> getClientes() {
         return clientes;
     }
 
+    public static void addCliente(String ip) {
+        Servidor.clientes.add(ip);
+    }
 }

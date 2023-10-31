@@ -20,6 +20,7 @@ public class TrataCliente implements Runnable {
         this.saida = new ObjectOutputStream(this.soquete_cliente.getOutputStream());
         this.entrada = new ObjectInputStream(this.soquete_cliente.getInputStream());
         this.mensagens = mensagens;
+        Servidor.addCliente(this.soquete_cliente.getInetAddress().toString());
     }
 
     public void enviar_mensagem(Object mensagem) throws Exception {

@@ -162,7 +162,10 @@ public class Janela extends javax.swing.JFrame {
             Mensagem msg = new Mensagem(this.cliente.toString(), "LISTAR;MENSAGENS");
             this.cliente.enviar_mensagem(msg);
             this.listObj.clear();
-            ArrayList<Object> list = (ArrayList<Object>) this.cliente.receber_mensagem();
+            
+            ArrayList<Object> list = new ArrayList<>();
+            list = (ArrayList<Object>) this.cliente.receber_mensagem();
+            
             this.listObj.addAll(list);
             JOptionPane.showMessageDialog(this, "Consulta sucessida");
         } catch (Exception ex) {
@@ -175,7 +178,7 @@ public class Janela extends javax.swing.JFrame {
     private void jButtonConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectActionPerformed
         try {
             // TODO add your handling code here:
-            this.cliente = new Cliente("10.90.37.78", 15500);
+            this.cliente = new Cliente("localhost", 15500);
             this.conectou(true);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao conectar");

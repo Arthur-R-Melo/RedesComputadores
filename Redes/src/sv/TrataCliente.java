@@ -40,23 +40,29 @@ public class TrataCliente implements Runnable {
         try {
             Mensagem mensagem;
             String comand[];
+            OUTER:
             do {
                 mensagem = (Mensagem) receber_mensagem();
                 System.out.println(mensagem);
                 comand = mensagem.getTexto().split(";");
-
-                if (comand[0].equals("ENCERRAR")) {
-                    Servidor.removeCliente(this.soquete_cliente.getInetAddress().toString());
-                    break;
-                } else if (comand[0].equals("ENVIAR")) {
-                    mensagem.setTexto(comand[1]);
-                    this.mensagens.add(mensagem);
-                } else if (comand[0].equals("LISTAR")) {
-                    if (comand[1].equals("CLIENTES")) {
-                        enviar_mensagem(Servidor.getClientes());
-                    } else if (comand[1].equals("MENSAGENS")) {
-                        enviar_mensagem(this.mensagens);
-                    }
+                switch (comand[0]) {
+                    case "ENCERRAR":
+                        Servidor.removeCliente(this.soquete_cliente.getInetAddress().toString());
+                        break OUTER;
+                    case "ENVIAR":
+                        mensagem.setTexto(comand[1]);
+                        this.mensagens.add(mensagem);
+                        break;
+                    case "LISTAR":
+                        if (comand[1].equals("CLIENTES")) {
+                            enviar_mensagem(Servidor.getClientes());
+                        } else if (comand[1].equals("MENSAGENS")) {
+                            ArrayList<Mensagem> msg = new ArrayList<>();
+                            msg.addAll(this.mensagens);
+                            enviar_mensagem(msg);
+                        }   break;
+                    default:
+                        break;
                 }
             } while (!mensagem.equals("ENCERRAR"));
             System.out.println("\u001b[32m" + soquete_cliente + " - Desconectou!");

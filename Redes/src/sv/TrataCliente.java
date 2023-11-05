@@ -46,6 +46,7 @@ public class TrataCliente implements Runnable {
                 comand = mensagem.getTexto().split(";");
 
                 if (comand[0].equals("ENCERRAR")) {
+                    Servidor.removeCliente(this.soquete_cliente.getInetAddress().toString());
                     break;
                 } else if (comand[0].equals("ENVIAR")) {
                     mensagem.setTexto(comand[1]);

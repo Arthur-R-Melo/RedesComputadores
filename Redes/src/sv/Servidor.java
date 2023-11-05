@@ -44,4 +44,8 @@ public class Servidor {
     public static void addCliente(String ip) {
         Servidor.clientes.add(ip);
     }
+
+    public static void removeCliente(String ip) {
+        Servidor.clientes.remove(ip);
+    }
 }

@@ -1,19 +1,20 @@
 package cl;
 
+import model.Mensagem;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class Cliente {
+public class ClienteControl {
 
     private Socket soquete;
     private ObjectOutputStream saida;
     private ObjectInputStream entrada;
     private ArrayList<Mensagem> mensagens;
 
-    public Cliente(String endereco, int porta) throws Exception {
+    public ClienteControl(String endereco, int porta) throws Exception {
         super();
         this.soquete = new Socket(endereco, porta);
         this.saida = new ObjectOutputStream(this.soquete.getOutputStream());

@@ -1,12 +1,13 @@
 package cl;
 
+import model.Mensagem;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
 public class Janela extends javax.swing.JFrame {
 
-    private Cliente cliente;
+    private ClienteControl cliente;
     private DefaultListModel<Object> listObj;
 
     public Janela() {
@@ -184,7 +185,7 @@ public class Janela extends javax.swing.JFrame {
     private void jButtonConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectActionPerformed
         try {
             // TODO add your handling code here:
-            this.cliente = new Cliente("10.90.37.77", 15500);
+            this.cliente = new ClienteControl("10.90.37.77", 15500);
             this.conectou(true);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao conectar");

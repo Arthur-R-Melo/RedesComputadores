@@ -39,6 +39,7 @@ public class Janela extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jList = new javax.swing.JList<>();
+        jLabeeel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -109,9 +110,11 @@ public class Janela extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3))
+                    .addComponent(jLabeeel))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -137,6 +140,8 @@ public class Janela extends javax.swing.JFrame {
                         .addContainerGap(107, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabeeel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
@@ -159,13 +164,14 @@ public class Janela extends javax.swing.JFrame {
 
     private void jButtonListMsgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonListMsgActionPerformed
         try {
+            this.jLabeeel.setText("Mensagens");
             Mensagem msg = new Mensagem(this.cliente.toString(), "LISTAR;MENSAGENS");
             this.cliente.enviar_mensagem(msg);
             this.listObj.clear();
-            
+
             ArrayList<Object> list = new ArrayList<>();
             list = (ArrayList<Object>) this.cliente.receber_mensagem();
-            
+
             this.listObj.addAll(list);
             JOptionPane.showMessageDialog(this, "Consulta sucessida");
         } catch (Exception ex) {
@@ -178,7 +184,7 @@ public class Janela extends javax.swing.JFrame {
     private void jButtonConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectActionPerformed
         try {
             // TODO add your handling code here:
-            this.cliente = new Cliente("localhost", 15500);
+            this.cliente = new Cliente("10.90.37.77", 15500);
             this.conectou(true);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao conectar");
@@ -187,6 +193,7 @@ public class Janela extends javax.swing.JFrame {
 
     private void jButtonEncerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEncerrarActionPerformed
         try {
+            this.jLabeeel.setText("");
             this.conectou(false);
             Mensagem msg = new Mensagem(this.cliente.toString(), "ENCERRAR");
             this.cliente.enviar_mensagem(msg);
@@ -200,8 +207,12 @@ public class Janela extends javax.swing.JFrame {
     private void jButtonEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnviarActionPerformed
         // TODO add your handling code here:
         String nome = this.cliente.toString();
-        String txt = "ENVIAR;" + this.jTextArea.getText();
 
+        if (this.jLabeeel.getText().equalsIgnoreCase("Usuários")) {
+
+        } else {
+            String txt = "ENVIAR;" + this.jTextArea.getText();
+        }
         Mensagem msg = new Mensagem(nome, txt);
         try {
             this.cliente.enviar_mensagem(msg);
@@ -209,11 +220,13 @@ public class Janela extends javax.swing.JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao enviar mensagem");
         }
+
     }//GEN-LAST:event_jButtonEnviarActionPerformed
 
     private void jButtonListUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonListUserActionPerformed
         // TODO add your handling code here:
         try {
+            this.jLabeeel.setText("Usuários:");
             Mensagem msg = new Mensagem(this.cliente.toString(), "LISTAR;CLIENTES");
             this.cliente.enviar_mensagem(msg);
             this.listObj.clear();
@@ -264,6 +277,7 @@ public class Janela extends javax.swing.JFrame {
     private javax.swing.JButton jButtonEnviar;
     private javax.swing.JButton jButtonListMsg;
     private javax.swing.JButton jButtonListUser;
+    private javax.swing.JLabel jLabeeel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JList<Object> jList;
     private javax.swing.JPanel jPanel1;

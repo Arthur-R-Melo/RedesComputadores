@@ -55,7 +55,9 @@ public class TrataCliente implements Runnable {
                         break;
                     case "LISTAR":
                         if (comand[1].equals("CLIENTES")) {
-                            enviar_mensagem(Servidor.getClientes());
+                            ArrayList<String> clientes = new ArrayList<>();
+                            clientes.addAll(Servidor.getClientes());
+                            enviar_mensagem(clientes);
                         } else if (comand[1].equals("MENSAGENS")) {
                             ArrayList<Mensagem> msg = new ArrayList<>();
                             msg.addAll(this.mensagens);

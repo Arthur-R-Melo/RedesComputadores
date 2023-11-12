@@ -5,6 +5,7 @@ public class Cliente {
     private int id;
     private String nome;
     private String senha;
+    private boolean online;
 
     public int getId() {
         return id;

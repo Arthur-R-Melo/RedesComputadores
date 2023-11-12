@@ -9,6 +9,7 @@ public class Mensagem implements Serializable {
     private long id_destinatario;
     private long id_remetente;
     private String texto;
+    private String operacao;
 
     public Mensagem(String nome, String texto) {
         super();
@@ -28,6 +29,14 @@ public class Mensagem implements Serializable {
         this.id = id;
         this.id_remetente = id_remetente;
         this.texto = texto;
+    }
+    
+    public String getOperacao() {
+        return this.operacao;
+    }
+
+    public void setOperacao(String operacao) {
+        this.operacao = operacao;
     }
 
     public String getNome() {

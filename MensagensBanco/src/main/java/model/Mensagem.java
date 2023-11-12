@@ -46,6 +46,32 @@ public class Mensagem implements Serializable {
         this.texto = texto;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getId_destinatario() {
+        return id_destinatario;
+    }
+
+    public void setId_destinatario(long id_destinatario) {
+        this.id_destinatario = id_destinatario;
+    }
+
+    public long getId_remetente() {
+        return id_remetente;
+    }
+
+    public void setId_remetente(long id_remetente) {
+        this.id_remetente = id_remetente;
+    }
+    
+    
+
     @Override
     public String toString() {
         return "Mensagem [nome=" + nome + ", texto=" + texto + "]";

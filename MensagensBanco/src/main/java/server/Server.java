@@ -32,7 +32,7 @@ public class Server {
             try {
                 soqueteCliente = servidor.soquete_servidor.accept();
                 System.out.println("\u001b[32m" + soqueteCliente + " - Conectou!");
-                new Thread(new ClientControl(soqueteCliente)).start();
+                new Thread(new TrataCliente(soqueteCliente)).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

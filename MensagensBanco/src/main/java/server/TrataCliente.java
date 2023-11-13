@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import model.Cliente;
 import model.Mensagem;
@@ -76,7 +77,10 @@ public class TrataCliente implements Runnable {
             } while (!mensagem.getTexto().equals("ENCERRAR"));
             System.out.println("\u001b[32m" + soquete_cliente + " - Desconectou!");
             finalizar();
-        } catch (Exception ex) {
+        }catch (SocketException ex){
+            
+        }
+        catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }

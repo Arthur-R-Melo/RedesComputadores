@@ -15,6 +15,7 @@ public class Cliente {
 
     private long id;
     private String nome;
+    private boolean online;
 
     public Cliente(String endereco, int porta, String nome) throws Exception {
         super();
@@ -24,10 +25,22 @@ public class Cliente {
         this.nome = nome;
     }
 
+    public Cliente() {
+    }
+
     public Cliente(long id, String nome) {
         this.id = id;
         this.nome = nome;
     }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
+    
 
     public long getId() {
         return id;
@@ -61,5 +74,4 @@ public class Cliente {
     public String toString() {
         return this.nome;
     }
-
 }

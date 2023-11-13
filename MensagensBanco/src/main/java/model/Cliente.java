@@ -4,8 +4,16 @@ package model;
 public class Cliente {
     private long id;
     private String nome;
-    private String senha;
     private boolean online;
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
+    
 
     public long getId() {
         return id;
@@ -21,14 +29,6 @@ public class Cliente {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
     }
     
     

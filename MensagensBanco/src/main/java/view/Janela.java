@@ -12,6 +12,8 @@ public class Janela extends javax.swing.JFrame {
     }
     
     private void config() {
+        this.setLocationRelativeTo(null);
+        
         this.group = new ButtonGroup();
         this.group.add(jRadioOn);
         this.group.add(jRadioOff);
@@ -33,6 +35,8 @@ public class Janela extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jListClientes = new javax.swing.JList<>();
         jRadioCvsGeral = new javax.swing.JRadioButton();
+        jLabel1 = new javax.swing.JLabel();
+        jTextNome = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -53,6 +57,11 @@ public class Janela extends javax.swing.JFrame {
         jRadioOff.setContentAreaFilled(false);
         jRadioOff.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jRadioOff.setFocusable(false);
+        jRadioOff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioOffActionPerformed(evt);
+            }
+        });
 
         jPanelCvs.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -97,6 +106,10 @@ public class Janela extends javax.swing.JFrame {
         jRadioCvsGeral.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jRadioCvsGeral.setFocusable(false);
 
+        jLabel1.setText("Nome:");
+
+        jTextNome.setText("Digite seu nome");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -117,7 +130,10 @@ public class Janela extends javax.swing.JFrame {
                         .addComponent(jRadioOn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jRadioOff)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextNome, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -126,7 +142,9 @@ public class Janela extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jRadioOn)
-                    .addComponent(jRadioOff))
+                    .addComponent(jRadioOff)
+                    .addComponent(jLabel1)
+                    .addComponent(jTextNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -136,7 +154,7 @@ public class Janela extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jRadioCvsGeral)
-                        .addGap(0, 1, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -160,7 +178,13 @@ public class Janela extends javax.swing.JFrame {
 
     private void jRadioOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioOnActionPerformed
         // TODO add your handling code here:
+        this.jTextNome.setEnabled(false);
     }//GEN-LAST:event_jRadioOnActionPerformed
+
+    private void jRadioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioOffActionPerformed
+        // TODO add your handling code here:
+        this.jTextNome.setEnabled(true);
+    }//GEN-LAST:event_jRadioOffActionPerformed
 
     /**
      * @param args the command line arguments
@@ -199,6 +223,7 @@ public class Janela extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JList<String> jListClientes;
     private javax.swing.JList<String> jListMsg;
     private javax.swing.JPanel jPanel1;
@@ -210,5 +235,6 @@ public class Janela extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextEnvio;
+    private javax.swing.JTextField jTextNome;
     // End of variables declaration//GEN-END:variables
 }

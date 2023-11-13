@@ -207,6 +207,7 @@ public class JanelaCliente extends javax.swing.JFrame {
             this.usuario = new Cliente("10.90.37.77", 15500, nome);
 
             Mensagem msg = new Mensagem(nome, "");
+            msg.setOperacao("ENTRAR");
 
             this.usuario.enviar_mensagem(msg);
 

@@ -23,6 +23,7 @@ public class TrataCliente implements Runnable {
     private ObjectOutputStream saida;
     private ObjectInputStream entrada;
     private ClienteDAO clienteDAO;
+    private int id;
 
     public TrataCliente(Socket soquete_cliente) throws Exception {
         super();
@@ -55,20 +56,47 @@ public class TrataCliente implements Runnable {
                 comand = mensagem.getOperacao().split(";");
                 switch (comand[0]) {
                     case "ENCERRAR":
-                        
+                        clienteDAO.setOnline(false, id);
                         break OUTER;
-                        
+
                     case "ENVIAR":
                         break;
-                        
+
                     case "ENTRAR":
                         Cliente cliente = clienteDAO.selectByName(comand[1]);
-                        this.enviar_mensagem(cliente.isOnline()?"ERRO":"OK");
+                        if (cliente == null) {
+                            cliente = new Cliente();
+                            cliente.setNome(comand[1]);
+                            cliente.setOnline(true);
+                            if(clienteDAO.insert(cliente)){
+                                this.id = (int)cliente.getId();
+                                enviar_mensagem("OK");
+                            }else {
+                                enviar_mensagem("ERRO");
+                            }
+                        } else {
+                            if(cliente.isOnline()){
+                                enviar_mensagem("ERRO");
+                            }else {
+                                enviar_mensagem("OK");
+                                cliente.setOnline(true);
+                                clienteDAO.setOnline(true, cliente.getId());
+                                this.id = (int)cliente.getId();
+                            }
+                        }
+
                         break;
-                        
+
                     case "LISTAR":
+                        if(comand[1].equals("CLIENTES")) {
+                            enviar_mensagem(clienteDAO.selectAll());
+                        } else if(comand[1].equals("MENSAGENS")){
+                            
+                        }else {
+                            enviar_mensagem(null);
+                        }
                         break;
-                        
+
                     default:
                         throw new AssertionError();
                 }
@@ -76,16 +104,11 @@ public class TrataCliente implements Runnable {
             } while (!mensagem.getTexto().equals("ENCERRAR"));
             System.out.println("\u001b[32m" + soquete_cliente + " - Desconectou!");
             finalizar();
-        }catch (SocketException ex){
-            
-        }
-        catch (Exception ex) {
+        } catch (SocketException ex) {
+
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-    }
-    
-    public ArrayList<Cliente> listaClientes(String comand[]) {
-        return null;
     }
 
     public ArrayList<Mensagem> listaMensagens(String comand[]) {

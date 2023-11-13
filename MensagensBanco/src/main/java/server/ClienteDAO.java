@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import model.Cliente;
 import tools.FactoryPostgres;
@@ -19,9 +18,9 @@ public class ClienteDAO {
     
     
     public boolean insert(Cliente cliente) {
-        String sql = "INSERT INTO Cliente(nome, online) VALUES (?,?)";
+        String sql = "INSERT INTO Cliente(nome, online) VALUES (?,?) RETURNIG id";
         
-        try(PreparedStatement trans = this.c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+        try(PreparedStatement trans = this.c.prepareStatement(sql)){
             trans.setString(1, cliente.getNome());
             trans.setBoolean(2, cliente.isOnline());
             

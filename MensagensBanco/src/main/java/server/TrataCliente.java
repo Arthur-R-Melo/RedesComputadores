@@ -52,7 +52,7 @@ public class TrataCliente implements Runnable {
             OUTER:
             do {
                 mensagem = (Mensagem) receber_mensagem();
-                comand = mensagem.getOperacao().split(",");
+                comand = mensagem.getOperacao().split(";");
                 switch (comand[0]) {
                     case "ENCERRAR":
                         
@@ -62,9 +62,8 @@ public class TrataCliente implements Runnable {
                         break;
                         
                     case "ENTRAR":
-                        break;
-                        
-                    case "REGISTRAR":
+                        Cliente cliente = clienteDAO.selectByName(comand[1]);
+                        this.enviar_mensagem(cliente.isOnline()?"ERRO":"OK");
                         break;
                         
                     case "LISTAR":

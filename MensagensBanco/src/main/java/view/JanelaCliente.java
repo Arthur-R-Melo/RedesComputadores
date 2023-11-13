@@ -1,22 +1,47 @@
 package view;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import model.Cliente;
+import model.Mensagem;
 
-public class Janela extends javax.swing.JFrame {
+public class JanelaCliente extends javax.swing.JFrame {
 
     private ButtonGroup group;
-    
-    public Janela() {
+    private Cliente usuario;
+    private DefaultListModel<Cliente> listaClientes;
+
+    public JanelaCliente() {
         initComponents();
         config();
     }
-    
+
     private void config() {
+        this.enableComponents(false);
         this.setLocationRelativeTo(null);
-        
+        this.listaClientes = new DefaultListModel<>();
+        this.jListClientes.setModel(listaClientes);
+
         this.group = new ButtonGroup();
         this.group.add(jRadioOn);
         this.group.add(jRadioOff);
+    }
+
+    private void atualizarClientes(ArrayList<Cliente> clientes) {
+        this.listaClientes.clear();
+        this.listaClientes.addAll(clientes);
+    }
+
+    private void enableComponents(boolean op) {
+        this.jTextNome.setEnabled(!op);
+        this.jTextEnvio.setEnabled(op);
+        this.jRadioCvsGeral.setEnabled(op);
+        this.jButtonEnviar.setEnabled(op);
+        this.jListClientes.setEnabled(op);
+        this.jListMsg.setEnabled(op);
     }
 
     @SuppressWarnings("unchecked")
@@ -31,7 +56,7 @@ public class Janela extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jListMsg = new javax.swing.JList<>();
         jTextEnvio = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        jButtonEnviar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jListClientes = new javax.swing.JList<>();
         jRadioCvsGeral = new javax.swing.JRadioButton();
@@ -67,11 +92,9 @@ public class Janela extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(jListMsg);
 
-        jTextEnvio.setText("jTextField1");
-
-        jButton1.setText("Enviar");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.setFocusable(false);
+        jButtonEnviar.setText("Enviar");
+        jButtonEnviar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButtonEnviar.setFocusable(false);
 
         javax.swing.GroupLayout jPanelCvsLayout = new javax.swing.GroupLayout(jPanelCvs);
         jPanelCvs.setLayout(jPanelCvsLayout);
@@ -84,7 +107,7 @@ public class Janela extends javax.swing.JFrame {
                     .addGroup(jPanelCvsLayout.createSequentialGroup()
                         .addComponent(jTextEnvio)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)))
+                        .addComponent(jButtonEnviar)))
                 .addContainerGap())
         );
         jPanelCvsLayout.setVerticalGroup(
@@ -95,7 +118,7 @@ public class Janela extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelCvsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextEnvio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(jButtonEnviar))
                 .addContainerGap())
         );
 
@@ -177,13 +200,37 @@ public class Janela extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jRadioOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioOnActionPerformed
-        // TODO add your handling code here:
-        this.jTextNome.setEnabled(false);
+        try {
+            // TODO add your handling code here
+            this.enableComponents(true);
+            String nome = this.jTextNome.getText();
+            this.usuario = new Cliente("10.90.37.77", 15500, nome);
+
+            Mensagem msg = new Mensagem(nome, "");
+
+            this.usuario.enviar_mensagem(msg);
+
+            Mensagem resposta = (Mensagem) this.usuario.receber_mensagem();
+            if (resposta.getOperacao().equalsIgnoreCase("ok")) {
+                ArrayList<Cliente> clientes = (ArrayList<Cliente>) this.usuario.receber_mensagem();
+                this.atualizarClientes(clientes);
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Falha ao conectar no servidor!", "Erro", JOptionPane.ERROR_MESSAGE);
+            this.jRadioOffActionPerformed(evt);
+        }
     }//GEN-LAST:event_jRadioOnActionPerformed
 
     private void jRadioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioOffActionPerformed
-        // TODO add your handling code here:
-        this.jTextNome.setEnabled(true);
+        try {
+            // TODO add your handling code here:
+            this.enableComponents(false);
+            this.usuario.finalizar();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Falha ao desconectar do servidor!", "Erro", JOptionPane.ERROR_MESSAGE);
+
+        }
     }//GEN-LAST:event_jRadioOffActionPerformed
 
     /**
@@ -203,28 +250,29 @@ public class Janela extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Janela.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JanelaCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Janela.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JanelaCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Janela.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JanelaCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Janela.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JanelaCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Janela().setVisible(true);
+                new JanelaCliente().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonEnviar;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JList<String> jListClientes;
+    private javax.swing.JList<Cliente> jListClientes;
     private javax.swing.JList<String> jListMsg;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelCvs;

@@ -2,6 +2,9 @@
 package server;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import model.Cliente;
 import tools.FactoryPostgres;
@@ -29,7 +32,18 @@ public class ClienteDAO {
         return null;
     }
     
-    public boolean setOnline(boolean online) {
-        return true;
+    public boolean setOnline(boolean online, long id) {
+        String sql = "UPDATE Clientes SET online = ? WHERE id = ?";
+        
+        try(PreparedStatement trans = this.c.prepareStatement(sql)) {
+            trans.setBoolean(1, online);
+            trans.setLong(2, id);
+            
+            trans.execute();
+            return true;
+        }catch(SQLException ex){
+            System.out.println(ex.getMessage());
+            return false;
+        }
     }
 }

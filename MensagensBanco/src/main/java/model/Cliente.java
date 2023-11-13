@@ -2,12 +2,12 @@
 package model;
 
 public class Cliente {
-    private int id;
+    private long id;
     private String nome;
     private String senha;
     private boolean online;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

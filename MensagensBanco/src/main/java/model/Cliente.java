@@ -25,6 +25,9 @@ public class Cliente {
         this.nome = nome;
     }
 
+    public Cliente() {
+    }
+
     public Cliente(long id, String nome) {
         this.id = id;
         this.nome = nome;

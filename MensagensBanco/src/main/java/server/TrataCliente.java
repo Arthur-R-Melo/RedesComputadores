@@ -27,17 +27,22 @@ public class TrataCliente implements Runnable {
 
     public TrataCliente(Socket soquete_cliente) throws Exception {
         super();
+        this.id=0;
         this.soquete_cliente = soquete_cliente;
+        this.clienteDAO = new ClienteDAO();
         this.saida = new ObjectOutputStream(this.soquete_cliente.getOutputStream());
         this.entrada = new ObjectInputStream(this.soquete_cliente.getInputStream());
     }
 
     public void enviar_mensagem(Object mensagem) throws Exception {
+        System.out.println(mensagem);
         this.saida.writeObject(mensagem);
     }
 
     public Object receber_mensagem() throws Exception {
-        return this.entrada.readObject();
+        Object obj = this.entrada.readObject();
+        System.out.println(obj);
+        return obj;
     }
 
     public void finalizar() throws IOException {
@@ -71,6 +76,7 @@ public class TrataCliente implements Runnable {
                             if(clienteDAO.insert(cliente)){
                                 this.id = (int)cliente.getId();
                                 enviar_mensagem("OK");
+                                enviar_mensagem(clienteDAO.selectAll());
                             }else {
                                 enviar_mensagem("ERRO");
                             }
@@ -79,6 +85,7 @@ public class TrataCliente implements Runnable {
                                 enviar_mensagem("ERRO");
                             }else {
                                 enviar_mensagem("OK");
+                                enviar_mensagem(clienteDAO.selectAll());
                                 cliente.setOnline(true);
                                 clienteDAO.setOnline(true, cliente.getId());
                                 this.id = (int)cliente.getId();
@@ -105,7 +112,9 @@ public class TrataCliente implements Runnable {
             System.out.println("\u001b[32m" + soquete_cliente + " - Desconectou!");
             finalizar();
         } catch (SocketException ex) {
-
+            if(this.id!=0) {
+                clienteDAO.setOnline(false, id);
+            }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }

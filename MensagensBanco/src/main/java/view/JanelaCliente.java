@@ -30,7 +30,8 @@ public class JanelaCliente extends javax.swing.JFrame {
         this.group.add(jRadioOff);
     }
 
-    private void atualizarClientes(ArrayList<Cliente> clientes) {
+    private void atualizarClientes(Cliente usuario) throws Exception {
+        ArrayList<Cliente> clientes = (ArrayList<Cliente>) this.usuario.receber_mensagem();
         this.listaClientes.clear();
         this.listaClientes.addAll(clientes);
     }
@@ -202,23 +203,26 @@ public class JanelaCliente extends javax.swing.JFrame {
     private void jRadioOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioOnActionPerformed
         try {
             // TODO add your handling code here
-            this.enableComponents(true);
             String nome = this.jTextNome.getText();
             this.usuario = new Cliente("10.90.37.77", 15500, nome);
 
             Mensagem msg = new Mensagem(nome, "");
-            msg.setOperacao("ENTRAR;"+nome);
+            msg.setOperacao("ENTRAR;" + nome);
 
             this.usuario.enviar_mensagem(msg);
 
-            Mensagem resposta = (Mensagem) this.usuario.receber_mensagem();
-            if (resposta.getOperacao().equalsIgnoreCase("ok")) {
-                ArrayList<Cliente> clientes = (ArrayList<Cliente>) this.usuario.receber_mensagem();
-                this.atualizarClientes(clientes);
+            String resposta = (String) this.usuario.receber_mensagem();
+            if (resposta.equalsIgnoreCase("ok")) {
+                this.atualizarClientes(usuario);
+                this.enableComponents(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Esse usuário já está online");
+                this.jRadioOffActionPerformed(evt);
             }
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Falha ao conectar no servidor!", "Erro", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
             this.jRadioOffActionPerformed(evt);
         }
     }//GEN-LAST:event_jRadioOnActionPerformed
@@ -227,6 +231,10 @@ public class JanelaCliente extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             this.enableComponents(false);
+            if (this.jRadioOn.isSelected()) {
+                this.jRadioOn.setSelected(false);
+                this.jRadioOff.setSelected(true);
+            }
             this.usuario.finalizar();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Falha ao desconectar do servidor!", "Erro", JOptionPane.ERROR_MESSAGE);

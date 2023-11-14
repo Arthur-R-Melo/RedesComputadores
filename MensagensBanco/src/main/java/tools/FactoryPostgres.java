@@ -18,7 +18,7 @@ public class FactoryPostgres {
     public static Connection getConexaoPostgres() {
         if(c == null) {
             try {
-                c = DriverManager.getConnection("jdbc:postgresql://10.90.24.54:5432/postgres", "postgres", "postgres");
+                c = DriverManager.getConnection("jdbc:postgresql://localhost/postgres", "postgres", "postgres");
             } catch (SQLException ex) {
                 System.err.println("Houve um erro na conexão!");
                 return null;

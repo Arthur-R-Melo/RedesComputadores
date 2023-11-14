@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import model.Cliente;
 import tools.FactoryPostgres;
@@ -19,9 +18,9 @@ public class ClienteDAO {
     
     
     public boolean insert(Cliente cliente) {
-        String sql = "INSERT INTO Cliente(nome, online) VALUES (?,?)";
+        String sql = "INSERT INTO Clientes(nome, online) VALUES (?,?) returning id";
         
-        try(PreparedStatement trans = this.c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+        try(PreparedStatement trans = this.c.prepareStatement(sql)){
             trans.setString(1, cliente.getNome());
             trans.setBoolean(2, cliente.isOnline());
             
@@ -38,7 +37,7 @@ public class ClienteDAO {
     public ArrayList<Cliente> selectAll() {
         ArrayList<Cliente> retorno = new ArrayList<>();
         
-        String sql = "SELECT nome, id, online FROM Cliente ORDER BY online";
+        String sql = "SELECT nome, id, online FROM Clientes ORDER BY online";
         
         try(PreparedStatement trans = this.c.prepareStatement(sql)) {
             ResultSet resultado = trans.executeQuery();
@@ -61,7 +60,7 @@ public class ClienteDAO {
     
     public Cliente selectByName(String name) {
         Cliente retorno;
-        String sql = "SELECT nome, id, online FROM Cliente WHERE nome = ?";
+        String sql = "SELECT nome, id, online FROM Clientes WHERE nome = ?";
         try(PreparedStatement trans = this.c.prepareStatement(sql)) {
             trans.setString(1, name);
             
@@ -84,7 +83,7 @@ public class ClienteDAO {
     
     public Cliente selectById(int id) {
         Cliente retorno;
-        String sql = "SELECT nome, id, online FROM Cliente WHERE id = ?";
+        String sql = "SELECT nome, id, online FROM Clientes WHERE id = ?";
         try(PreparedStatement trans = this.c.prepareStatement(sql)) {
             trans.setInt(1, id);
             

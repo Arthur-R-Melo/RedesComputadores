@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Mensagem implements Serializable {
 
+    private String nome;
     private long id;
     private long id_destinatario;
     private long id_remetente;
@@ -15,6 +16,14 @@ public class Mensagem implements Serializable {
         this.texto = texto;
         this.operacao = opercacao;
     }
+
+    public Mensagem(String nome, long id, String texto) {
+        this.nome = nome;
+        this.id = id;
+        this.texto = texto;
+    }
+    
+    
 
     public Mensagem(long id, long id_destinatario, long id_remetente, String texto) {
         this.id = id;
@@ -69,7 +78,14 @@ public class Mensagem implements Serializable {
     public void setId_remetente(long id_remetente) {
         this.id_remetente = id_remetente;
     }
-    
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
     
 
     @Override

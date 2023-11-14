@@ -4,17 +4,16 @@ import java.io.Serializable;
 
 public class Mensagem implements Serializable {
 
-    private String nome;
     private long id;
     private long id_destinatario;
     private long id_remetente;
     private String texto;
     private String operacao;
 
-    public Mensagem(String nome, String texto) {
+    public Mensagem(String opercacao, String texto) {
         super();
-        this.nome = nome;
         this.texto = texto;
+        this.operacao = opercacao;
     }
 
     public Mensagem(long id, long id_destinatario, long id_remetente, String texto) {
@@ -37,14 +36,6 @@ public class Mensagem implements Serializable {
 
     public void setOperacao(String operacao) {
         this.operacao = operacao;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
     }
 
     public String getTexto() {
@@ -83,7 +74,7 @@ public class Mensagem implements Serializable {
 
     @Override
     public String toString() {
-        return "Mensagem [nome=" + nome + ", texto=" + texto + "]";
+        return "[" + operacao + "] = " + texto + ";";
     }
 
 }

@@ -113,6 +113,7 @@ public class TrataCliente implements Runnable {
             finalizar();
         } catch (SocketException ex) {
             if(this.id!=0) {
+                System.err.println("CLIENTE DESCONECTOU A FORÇA");
                 clienteDAO.setOnline(false, id);
             }
         } catch (Exception ex) {

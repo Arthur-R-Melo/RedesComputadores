@@ -8,6 +8,7 @@ public class Mensagem implements Serializable {
     private long id;
     private long id_destinatario;
     private long id_remetente;
+    private long id_conversa;
     private String texto;
     private String operacao;
 
@@ -22,8 +23,6 @@ public class Mensagem implements Serializable {
         this.id = id;
         this.texto = texto;
     }
-    
-    
 
     public Mensagem(long id, long id_destinatario, long id_remetente, String texto) {
         this.id = id;
@@ -38,6 +37,16 @@ public class Mensagem implements Serializable {
         this.id_remetente = id_remetente;
         this.texto = texto;
     }
+    
+
+    public long getId_conversa() {
+        return id_conversa;
+    }
+
+    public void setId_conversa(long id_conversa) {
+        this.id_conversa = id_conversa;
+    }
+    
     
     public String getOperacao() {
         return this.operacao;

@@ -22,16 +22,18 @@ public class MensagemDAO {
         String sql = "SELECT INTO mensagens(texto, id_remetente, id_conversa) VALUES (?,?,?) returning id";
         try (PreparedStatement trans = c.prepareStatement(sql)) {
             trans.setString(1, mensagem.getTexto());
-            trans.setInt(2, (int)mensagem.getId_remetente());
-            trans.setInt(3, (int)mensagem.getId_conversa());
-            
+            trans.setInt(2, (int) mensagem.getId_remetente());
+            trans.setInt(3, (int) mensagem.getId_conversa());
+
             ResultSet result = trans.executeQuery();
-            if(result.next()) {
+            if (result.next()) {
                 mensagem.setId(result.getInt("id"));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             Logger.getLogger(MensagemDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex){
+            System.err.println(ex.getMessage());
         }
         return false;
     }
@@ -41,7 +43,7 @@ public class MensagemDAO {
         String sql = "SELECT M.id, M.texto, C.nome FROM mensagens M WHERE id_conversa = ? JOIN clientes C ON C.id = M.id_remetente ORDER BY id";
         try (PreparedStatement trans = c.prepareStatement(sql)) {
             trans.setInt(1, id_conversa);
-            
+
             ResultSet resultado = trans.executeQuery();
 
             while (resultado.next()) {

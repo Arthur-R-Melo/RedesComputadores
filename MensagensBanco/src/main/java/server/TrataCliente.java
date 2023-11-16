@@ -23,13 +23,17 @@ public class TrataCliente implements Runnable {
     private ObjectOutputStream saida;
     private ObjectInputStream entrada;
     private ClienteDAO clienteDAO;
+    private MensagemDAO msgDAO;
+    private ConversaDAO cnvDAO;
     private int id;
 
     public TrataCliente(Socket soquete_cliente) throws Exception {
         super();
-        this.id=0;
+        this.id = 0;
         this.soquete_cliente = soquete_cliente;
         this.clienteDAO = new ClienteDAO();
+        this.msgDAO = new MensagemDAO();
+        this.cnvDAO = new ConversaDAO();
         this.saida = new ObjectOutputStream(this.soquete_cliente.getOutputStream());
         this.entrada = new ObjectInputStream(this.soquete_cliente.getInputStream());
     }
@@ -60,51 +64,65 @@ public class TrataCliente implements Runnable {
                 mensagem = (Mensagem) receber_mensagem();
                 comand = mensagem.getOperacao().split(";");
                 switch (comand[0]) {
-                    case "ENCERRAR":
+                    case "ENCERRAR" -> {
                         clienteDAO.setOnline(false, id);
                         break OUTER;
+                    }
 
-                    case "ENVIAR":
-                        break;
+                    case "ENVIAR" -> {
+                        int idConversa = cnvDAO.select((int)mensagem.getId_destinatario(), (int)mensagem.getId_destinatario());
+                        mensagem.setId_conversa(idConversa);
+                        if(msgDAO.insert(mensagem)) {
+                            enviar_mensagem("OK");
+                        }else {
+                            enviar_mensagem("ERRO");
+                        }
+                    }
 
-                    case "ENTRAR":
+                    case "ENTRAR" -> {
                         Cliente cliente = clienteDAO.selectByName(comand[1]);
                         if (cliente == null) {
                             cliente = new Cliente();
                             cliente.setNome(comand[1]);
                             cliente.setOnline(true);
-                            if(clienteDAO.insert(cliente)){
-                                this.id = (int)cliente.getId();
+                            if (clienteDAO.insert(cliente)) {
+                                this.id = (int) cliente.getId();
                                 enviar_mensagem("OK");
                                 enviar_mensagem(clienteDAO.selectAll());
-                            }else {
+                            } else {
                                 enviar_mensagem("ERRO");
                             }
                         } else {
-                            if(cliente.isOnline()){
+                            if (cliente.isOnline()) {
                                 enviar_mensagem("ERRO");
-                            }else {
+                            } else {
                                 enviar_mensagem("OK");
                                 enviar_mensagem(clienteDAO.selectAll());
                                 cliente.setOnline(true);
                                 clienteDAO.setOnline(true, cliente.getId());
-                                this.id = (int)cliente.getId();
+                                this.id = (int) cliente.getId();
                             }
                         }
+                    }
 
-                        break;
-
-                    case "LISTAR":
-                        if(comand[1].equals("CLIENTES")) {
-                            enviar_mensagem(clienteDAO.selectAll());
-                        } else if(comand[1].equals("MENSAGENS")){
-                            
-                        }else {
-                            enviar_mensagem(null);
+                    case "LISTAR" -> {
+                        switch (comand[1]) {
+                            case "CLIENTES" ->
+                                enviar_mensagem(clienteDAO.selectAll());
+                            case "MENSAGENS" -> {
+                                if (comand[2].equals("GERAL")) {
+                                    enviar_mensagem(msgDAO.select());
+                                } else if (comand[2].equals("DIRETA")) {
+                                    int id_conversa = cnvDAO.select(Integer.parseInt(comand[3]), Integer.parseInt(comand[4]));
+                                    enviar_mensagem(msgDAO.select(id_conversa));
+                                }
+                            }
+                            default ->
+                                enviar_mensagem(null);
                         }
-                        break;
+                    }
 
-                    default:
+                    default ->
                         throw new AssertionError();
                 }
 
@@ -112,16 +130,13 @@ public class TrataCliente implements Runnable {
             System.out.println("\u001b[32m" + soquete_cliente + " - Desconectou!");
             finalizar();
         } catch (SocketException ex) {
-            if(this.id!=0) {
+            if (this.id != 0) {
                 System.err.println("CLIENTE DESCONECTOU A FORÇA");
                 clienteDAO.setOnline(false, id);
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-    }
-
-    public ArrayList<Mensagem> listaMensagens(String comand[]) {
-        return null;
+        clienteDAO.setOnline(false, id);
     }
 }

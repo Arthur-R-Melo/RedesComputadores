@@ -12,6 +12,11 @@ import tools.FactoryPostgres;
 public class ConversaDAO {
     private Connection c;
     
+    /*
+        Por não haver necessidade da conversa enquanto modelo no código, 
+        todos os métodos que deveriam retorná-la, retornaram seu id
+    */
+    
     public ConversaDAO() {
         this.c = FactoryPostgres.getConexaoPostgres();
     }

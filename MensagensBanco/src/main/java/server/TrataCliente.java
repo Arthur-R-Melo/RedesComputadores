@@ -70,8 +70,14 @@ public class TrataCliente implements Runnable {
                     }
 
                     case "ENVIAR" -> {
-                        int idConversa = cnvDAO.select(this.id, (int)mensagem.getId_destinatario());
+                        int idConversa;
+                        if((int)mensagem.getId_destinatario() != 0) {
+                            idConversa = cnvDAO.select(this.id, (int)mensagem.getId_destinatario());
+                        }else {
+                            idConversa = 0;
+                        }
                         mensagem.setId_conversa(idConversa);
+                        mensagem.setId_remetente(this.id);
                         if(msgDAO.insert(mensagem)) {
                             enviar_mensagem("OK");
                         }else {

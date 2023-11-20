@@ -19,7 +19,7 @@ public class MensagemDAO {
     }
 
     public boolean insert(Mensagem mensagem) {
-        String sql = "SELECT INTO mensagens(texto, id_remetente, id_conversa) VALUES (?,?,?) returning id";
+        String sql = "INSERT INTO mensagens(texto, id_remetente, id_conversa) VALUES (?,?,?) returning id";
         try (PreparedStatement trans = c.prepareStatement(sql)) {
             trans.setString(1, mensagem.getTexto());
             trans.setInt(2, (int) mensagem.getId_remetente());
@@ -28,6 +28,7 @@ public class MensagemDAO {
             ResultSet result = trans.executeQuery();
             if (result.next()) {
                 mensagem.setId(result.getInt("id"));
+                return true;
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -62,14 +63,14 @@ public class MensagemDAO {
 
     public ArrayList<Mensagem> select() {
         ArrayList<Mensagem> retorno = new ArrayList<>();
-        String sql = "SELECT M.id, M.texto, C.nome FROM mensagens M WHERE id_conversa = 0 JOIN clientes C ON C.id = M.id_remetente ORDER BY id";
+        String sql = "SELECT M.id, M.texto, C.nome FROM mensagens M JOIN clientes C ON C.id = M.id_remetente WHERE id_conversa = 0 ORDER BY id";
         try (PreparedStatement trans = c.prepareStatement(sql)) {
             ResultSet resultado = trans.executeQuery();
 
             while (resultado.next()) {
-                Mensagem msg = new Mensagem(resultado.getString("C.nome"),
-                        resultado.getInt("M.id"),
-                        resultado.getString("M.texto"));
+                Mensagem msg = new Mensagem(resultado.getString("nome"),
+                        resultado.getInt("id"),
+                        resultado.getString("texto"));
                 retorno.add(msg);
             }
 

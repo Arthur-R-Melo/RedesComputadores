@@ -70,7 +70,7 @@ public class TrataCliente implements Runnable {
                     }
 
                     case "ENVIAR" -> {
-                        int idConversa = cnvDAO.select((int)mensagem.getId_destinatario(), (int)mensagem.getId_destinatario());
+                        int idConversa = cnvDAO.select(this.id, (int)mensagem.getId_destinatario());
                         mensagem.setId_conversa(idConversa);
                         if(msgDAO.insert(mensagem)) {
                             enviar_mensagem("OK");
@@ -113,7 +113,7 @@ public class TrataCliente implements Runnable {
                                 if (comand[2].equals("GERAL")) {
                                     enviar_mensagem(msgDAO.select());
                                 } else if (comand[2].equals("DIRETA")) {
-                                    int id_conversa = cnvDAO.select((int)mensagem.getId_destinatario(), (int)mensagem.getId_remetente());
+                                    int id_conversa = cnvDAO.select(this.id, (int)mensagem.getId_remetente());
                                     enviar_mensagem(msgDAO.select(id_conversa));
                                 }
                             }

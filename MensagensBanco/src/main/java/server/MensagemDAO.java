@@ -19,7 +19,7 @@ public class MensagemDAO {
     }
 
     public boolean insert(Mensagem mensagem) {
-        String sql = "SELECT INTO mensagens(texto, id_remetente, id_conversa) VALUES (?,?,?) returning id";
+        String sql = "INSERT INTO mensagens(texto, id_remetente, id_conversa) VALUES (?,?,?) returning id";
         try (PreparedStatement trans = c.prepareStatement(sql)) {
             trans.setString(1, mensagem.getTexto());
             trans.setInt(2, (int) mensagem.getId_remetente());
@@ -28,6 +28,7 @@ public class MensagemDAO {
             ResultSet result = trans.executeQuery();
             if (result.next()) {
                 mensagem.setId(result.getInt("id"));
+                return true;
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());

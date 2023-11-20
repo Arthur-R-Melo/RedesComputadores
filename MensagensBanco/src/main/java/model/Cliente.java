@@ -60,11 +60,15 @@ public class Cliente implements Serializable{
     }
 
     public void enviar_mensagem(Object mensagem) throws Exception {
+        System.out.println("[ENVIADO] : " +mensagem);
         this.saida.writeObject(mensagem);
     }
 
     public Object receber_mensagem() throws Exception {
-        return this.entrada.readObject();
+        
+        Object obj = this.entrada.readObject();
+        System.out.println("[RECEBIDO] : " +obj);
+        return obj;
     }
 
     public void finalizar() throws IOException {

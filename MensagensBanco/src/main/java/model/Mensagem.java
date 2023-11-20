@@ -99,7 +99,7 @@ public class Mensagem implements Serializable {
 
     @Override
     public String toString() {
-        return "[" + operacao + "] = " + texto + ";";
+        return "[" + nome + "] = " + texto + ";";
     }
 
 }

@@ -2,6 +2,10 @@ package view;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -13,6 +17,9 @@ public class JanelaCliente extends javax.swing.JFrame {
     private ButtonGroup group;
     private Cliente usuario;
     private DefaultListModel<Cliente> listaClientes;
+    private DefaultListModel<Mensagem> listaMensagens;
+    private Runnable esperaClientes;
+    private Runnable esperaMensagensNovas;
 
     public JanelaCliente() {
         initComponents();
@@ -23,17 +30,87 @@ public class JanelaCliente extends javax.swing.JFrame {
         this.enableComponents(false);
         this.setLocationRelativeTo(null);
         this.listaClientes = new DefaultListModel<>();
+        this.listaMensagens = new DefaultListModel<>();
         this.jListClientes.setModel(listaClientes);
+        this.jListMsg.setModel(this.listaMensagens);
 
         this.group = new ButtonGroup();
         this.group.add(jRadioOn);
         this.group.add(jRadioOff);
+
+        this.esperaClientes = new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    if (jRadioOn.isSelected()) {
+                        Mensagem msg = new Mensagem("LISTAR;CLIENTES", "");
+                        try {
+                            atualizarClientes(usuario);
+                            Thread.sleep(15000);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "Erro ao receber os clientes", "Erro", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            }
+        };
+        this.esperaMensagensNovas = new Runnable() {
+            @Override
+            public void run() {
+                Mensagem msg;
+                while (true) {
+
+                    if (jListClientes.getSelectedIndex() != -1) {
+                        try {
+                            msg = new Mensagem("LISTAR;MENSAGENS;DIRETA;", "");
+                            msg.setId_remetente(jListClientes.getSelectedValue().getId());
+
+                            ArrayList<Mensagem> list = (ArrayList<Mensagem>) usuario.receber_mensagem();
+                            listaMensagens.clear();
+                            listaMensagens.addAll(list);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    } else if (jRadioCvsGeral.isSelected()) {
+                        msg = new Mensagem("LISTAR;GERAL;", "");
+                        msg.setId_remetente(jListClientes.getSelectedValue().getId());
+
+                        ArrayList<Mensagem> list;
+                        try {
+                            list = (ArrayList<Mensagem>) usuario.receber_mensagem();
+                            listaMensagens.clear();
+                            listaMensagens.addAll(list);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }
+        };
+
     }
 
     private void atualizarClientes(Cliente usuario) throws Exception {
         ArrayList<Cliente> clientes = (ArrayList<Cliente>) this.usuario.receber_mensagem();
         this.listaClientes.clear();
         this.listaClientes.addAll(clientes);
+    }
+
+    private void esperaMsg() {
+        Runnable esperaMsg = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ArrayList<Mensagem> list = (ArrayList<Mensagem>) usuario.receber_mensagem();
+                    listaMensagens.clear();
+                    listaMensagens.addAll(list);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Erro ao listar mensagens", "erro", JOptionPane.ERROR);
+                }
+            }
+        };
     }
 
     private void enableComponents(boolean op) {
@@ -96,6 +173,11 @@ public class JanelaCliente extends javax.swing.JFrame {
         jButtonEnviar.setText("Enviar");
         jButtonEnviar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButtonEnviar.setFocusable(false);
+        jButtonEnviar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEnviarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanelCvsLayout = new javax.swing.GroupLayout(jPanelCvs);
         jPanelCvs.setLayout(jPanelCvsLayout);
@@ -129,6 +211,11 @@ public class JanelaCliente extends javax.swing.JFrame {
         jRadioCvsGeral.setContentAreaFilled(false);
         jRadioCvsGeral.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jRadioCvsGeral.setFocusable(false);
+        jRadioCvsGeral.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioCvsGeralActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Nome:");
 
@@ -229,7 +316,7 @@ public class JanelaCliente extends javax.swing.JFrame {
     private void jRadioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioOffActionPerformed
         try {
             // TODO add your handling code here:
-            
+
             this.enableComponents(false);
             if (this.jRadioOn.isSelected()) {
                 this.jRadioOn.setSelected(false);
@@ -241,6 +328,44 @@ public class JanelaCliente extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_jRadioOffActionPerformed
+
+    private void jButtonEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnviarActionPerformed
+        if (this.jRadioCvsGeral.isSelected() || this.jListClientes.getSelectedIndex() != -1) {
+            try {
+                String txt = this.jTextEnvio.getText();
+                Mensagem msg = new Mensagem("ENVIAR;", txt);
+                msg.setId_destinatario(jRadioCvsGeral.isSelected() ? 0 : this.jListClientes.getSelectedValue().getId());
+                this.usuario.enviar_mensagem(msg);
+                String resposta = (String) this.usuario.receber_mensagem();
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Falha ao enviar mensagem!",
+                        "Erro", JOptionPane.ERROR_MESSAGE);
+
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione a conversa na qual deseja enviar mensagem",
+                    "Falha", JOptionPane.WARNING_MESSAGE);
+        }
+
+
+    }//GEN-LAST:event_jButtonEnviarActionPerformed
+
+    private void jRadioCvsGeralActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioCvsGeralActionPerformed
+        // TODO add your handling code here:
+        this.jListClientes.setSelectedIndex(-1);
+        if (this.jRadioCvsGeral.isSelected()) {
+            try {
+                Mensagem msg = new Mensagem("LISTAR;MENSAGENS;GERAL", "");
+                this.usuario.enviar_mensagem(msg);
+                this.esperaMsg();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        }
+    }//GEN-LAST:event_jRadioCvsGeralActionPerformed
 
     /**
      * @param args the command line arguments
@@ -282,7 +407,7 @@ public class JanelaCliente extends javax.swing.JFrame {
     private javax.swing.JButton jButtonEnviar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JList<Cliente> jListClientes;
-    private javax.swing.JList<String> jListMsg;
+    private javax.swing.JList<Mensagem> jListMsg;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelCvs;
     private javax.swing.JRadioButton jRadioCvsGeral;

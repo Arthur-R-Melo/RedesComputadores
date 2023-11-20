@@ -60,30 +60,35 @@ public class JanelaCliente extends javax.swing.JFrame {
             public void run() {
                 Mensagem msg;
                 while (true) {
+                    if (jRadioOn.isSelected()) {
 
-                    if (jListClientes.getSelectedIndex() != -1) {
-                        try {
-                            msg = new Mensagem("LISTAR;MENSAGENS;DIRETA;", "");
+                        if (jListClientes.getSelectedIndex() != -1) {
+                            try {
+                                msg = new Mensagem("LISTAR;MENSAGENS;DIRETA;", "");
+                                msg.setId_remetente(jListClientes.getSelectedValue().getId());
+
+                                ArrayList<Mensagem> list = (ArrayList<Mensagem>) usuario.receber_mensagem();
+                                listaMensagens.clear();
+                                listaMensagens.addAll(list);
+                                Thread.sleep(2000);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        } else if (jRadioCvsGeral.isSelected()) {
+                            msg = new Mensagem("LISTAR;GERAL;", "");
                             msg.setId_remetente(jListClientes.getSelectedValue().getId());
 
-                            ArrayList<Mensagem> list = (ArrayList<Mensagem>) usuario.receber_mensagem();
-                            listaMensagens.clear();
-                            listaMensagens.addAll(list);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+                            ArrayList<Mensagem> list;
+                            try {
+                                list = (ArrayList<Mensagem>) usuario.receber_mensagem();
+                                listaMensagens.clear();
+                                listaMensagens.addAll(list);
+                                Thread.sleep(2000);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
                         }
-                    } else if (jRadioCvsGeral.isSelected()) {
-                        msg = new Mensagem("LISTAR;GERAL;", "");
-                        msg.setId_remetente(jListClientes.getSelectedValue().getId());
-
-                        ArrayList<Mensagem> list;
-                        try {
-                            list = (ArrayList<Mensagem>) usuario.receber_mensagem();
-                            listaMensagens.clear();
-                            listaMensagens.addAll(list);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+                        
                     }
                 }
             }
@@ -336,7 +341,7 @@ public class JanelaCliente extends javax.swing.JFrame {
                 Mensagem msg = new Mensagem("ENVIAR;", txt);
                 msg.setId_destinatario(jRadioCvsGeral.isSelected() ? 0 : this.jListClientes.getSelectedValue().getId());
                 this.usuario.enviar_mensagem(msg);
-                String resposta = (String) this.usuario.receber_mensagem();
+                //String resposta = (String) this.usuario.receber_mensagem();
 
             } catch (Exception ex) {
                 ex.printStackTrace();

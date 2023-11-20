@@ -79,9 +79,9 @@ public class TrataCliente implements Runnable {
                         mensagem.setId_conversa(idConversa);
                         mensagem.setId_remetente(this.id);
                         if(msgDAO.insert(mensagem)) {
-                            enviar_mensagem("OK");
+                           // enviar_mensagem("OK");
                         }else {
-                            enviar_mensagem("ERRO");
+                            //enviar_mensagem("ERRO");
                         }
                     }
 

@@ -206,8 +206,7 @@ public class JanelaCliente extends javax.swing.JFrame {
             String nome = this.jTextNome.getText();
             this.usuario = new Cliente("10.90.37.77", 15500, nome);
 
-            Mensagem msg = new Mensagem(nome, "");
-            msg.setOperacao("ENTRAR;" + nome);
+            Mensagem msg = new Mensagem("ENTRAR;" + nome, "");
 
             this.usuario.enviar_mensagem(msg);
 
@@ -230,6 +229,7 @@ public class JanelaCliente extends javax.swing.JFrame {
     private void jRadioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioOffActionPerformed
         try {
             // TODO add your handling code here:
+            
             this.enableComponents(false);
             if (this.jRadioOn.isSelected()) {
                 this.jRadioOn.setSelected(false);

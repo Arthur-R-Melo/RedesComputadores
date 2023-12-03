@@ -22,12 +22,19 @@ public class JanelaCliente extends javax.swing.JFrame {
     private SwingWorker esperaClientes;
     private SwingWorker esperaMensagensNovas;
 
+    private boolean flag;
+
     public JanelaCliente() {
         initComponents();
-        config();
+        try {
+            config();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(JanelaCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    private void config() {
+    private void config() throws InterruptedException {
+        this.flag = false;
         this.enableComponents(false);
         this.setLocationRelativeTo(null);
         this.listaClientes = new DefaultListModel<>();
@@ -46,9 +53,13 @@ public class JanelaCliente extends javax.swing.JFrame {
                     if (jRadioOn.isSelected()) {
                         Mensagem msg = new Mensagem("LISTAR;CLIENTES", "");
                         try {
-                            usuario.enviar_mensagem(msg);
-                            atualizarClientes(usuario);
-                            Thread.sleep(15000);
+                            if (!flag) {
+                                flag = true;
+                                usuario.enviar_mensagem(msg);
+                                atualizarClientes(usuario);
+                                flag = false;
+                                Thread.sleep(15000);
+                            }
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             JOptionPane.showMessageDialog(null, "Erro ao receber os clientes", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -57,7 +68,8 @@ public class JanelaCliente extends javax.swing.JFrame {
                 }
             }
         };
-
+        this.esperaClientes.execute();
+        this.esperaClientes.wait();
         this.esperaMensagensNovas = new SwingWorker() {
             @Override
             protected Object doInBackground() throws Exception {
@@ -69,14 +81,17 @@ public class JanelaCliente extends javax.swing.JFrame {
                             msg = new Mensagem("LISTAR;MENSAGENS;GERAL;", "");
                             msg.setId_remetente(jListClientes.getSelectedValue().getId());
 
-                            
                             ArrayList<Mensagem> list;
                             try {
-                                usuario.enviar_mensagem(msg);
-                                list = (ArrayList<Mensagem>) usuario.receber_mensagem();
-                                listaMensagens.clear();
-                                listaMensagens.addAll(list);
-                                Thread.sleep(2000);
+                                if (!flag) {
+                                    flag = true;
+                                    usuario.enviar_mensagem(msg);
+                                    list = (ArrayList<Mensagem>) usuario.receber_mensagem();
+                                    listaMensagens.clear();
+                                    listaMensagens.addAll(list);
+                                    flag = false;
+                                    Thread.sleep(2000);
+                                }
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
@@ -85,11 +100,15 @@ public class JanelaCliente extends javax.swing.JFrame {
                                 msg = new Mensagem("LISTAR;MENSAGENS;DIRETA;", "");
                                 msg.setId_remetente(jListClientes.getSelectedValue().getId());
 
-                                usuario.enviar_mensagem(msg);
-                                ArrayList<Mensagem> list = (ArrayList<Mensagem>) usuario.receber_mensagem();
-                                listaMensagens.clear();
-                                listaMensagens.addAll(list);
-                                Thread.sleep(2000);
+                                if (!flag) {
+                                    flag = true;
+                                    usuario.enviar_mensagem(msg);
+                                    ArrayList<Mensagem> list = (ArrayList<Mensagem>) usuario.receber_mensagem();
+                                    listaMensagens.clear();
+                                    listaMensagens.addAll(list);
+                                    flag = false;
+                                    Thread.sleep(2000);
+                                }
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
@@ -99,6 +118,8 @@ public class JanelaCliente extends javax.swing.JFrame {
                 }
             }
         };
+        this.esperaMensagensNovas.execute();
+        this.esperaMensagensNovas.wait();
 
         /*        this.esperaClientes = new Runnable() {
             @Override
@@ -165,19 +186,14 @@ public class JanelaCliente extends javax.swing.JFrame {
     }
 
     private void esperaMsg() {
-        Runnable esperaMsg = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ArrayList<Mensagem> list = (ArrayList<Mensagem>) usuario.receber_mensagem();
-                    listaMensagens.clear();
-                    listaMensagens.addAll(list);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Erro ao listar mensagens", "erro", JOptionPane.ERROR);
-                }
-            }
-        };
+        try {
+            ArrayList<Mensagem> list = (ArrayList<Mensagem>) usuario.receber_mensagem();
+            listaMensagens.clear();
+            listaMensagens.addAll(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao listar mensagens", "erro", JOptionPane.ERROR);
+        }
     }
 
     private void enableComponents(boolean op) {
@@ -368,8 +384,8 @@ public class JanelaCliente extends javax.swing.JFrame {
             if (resposta.equalsIgnoreCase("ok")) {
                 this.atualizarClientes(usuario);
                 this.enableComponents(true);
-                this.esperaClientes.execute();
-                this.esperaMensagensNovas.execute();
+                this.esperaClientes.notify();
+                this.esperaMensagensNovas.notify();
             } else {
                 JOptionPane.showMessageDialog(this, "Esse usuário já está online");
                 this.jRadioOffActionPerformed(evt);
@@ -431,8 +447,13 @@ public class JanelaCliente extends javax.swing.JFrame {
         if (this.jRadioCvsGeral.isSelected()) {
             try {
                 Mensagem msg = new Mensagem("LISTAR;MENSAGENS;GERAL", "");
+                while(flag){
+                    
+                }
+                flag = true;
                 this.usuario.enviar_mensagem(msg);
                 this.esperaMsg();
+                flag = false;
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

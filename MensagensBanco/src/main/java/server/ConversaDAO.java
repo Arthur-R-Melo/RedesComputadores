@@ -38,6 +38,7 @@ public class ConversaDAO {
                 return insert(id_remetente, id_destinatario);
             }
         } catch (SQLException ex) {
+            ex.printStackTrace();
             System.out.println(ex.getMessage());
             Logger.getLogger(ConversaDAO.class.getName()).log(Level.SEVERE, null, ex);
             return 0;

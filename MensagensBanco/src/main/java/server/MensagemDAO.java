@@ -34,6 +34,7 @@ public class MensagemDAO {
             System.out.println(ex.getMessage());
             Logger.getLogger(MensagemDAO.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex){
+            ex.printStackTrace();
             System.err.println(ex.getMessage());
         }
         return false;
@@ -48,14 +49,15 @@ public class MensagemDAO {
             ResultSet resultado = trans.executeQuery();
 
             while (resultado.next()) {
-                Mensagem msg = new Mensagem(resultado.getString("C.nome"),
-                        resultado.getInt("M.id"),
-                        resultado.getString("M.texto"));
+                Mensagem msg = new Mensagem(resultado.getString("nome"),
+                        resultado.getInt("id"),
+                        resultado.getString("texto"));
                 retorno.add(msg);
             }
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+            ex.printStackTrace();
             Logger.getLogger(MensagemDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return retorno;
@@ -76,6 +78,7 @@ public class MensagemDAO {
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+            ex.printStackTrace();
             Logger.getLogger(MensagemDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return retorno;

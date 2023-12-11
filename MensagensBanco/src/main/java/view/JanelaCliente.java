@@ -51,6 +51,7 @@ public class JanelaCliente extends javax.swing.JFrame {
             @Override
             protected Object doInBackground() throws Exception {
                 while (true) {
+                    System.out.println("");
                     if (on) {
                         Mensagem msg = new Mensagem("LISTAR;CLIENTES", "");
                         try {
@@ -76,10 +77,11 @@ public class JanelaCliente extends javax.swing.JFrame {
             protected Object doInBackground() throws Exception {
                 Mensagem msg;
                 while (true) {
+                    System.out.println("");
                     if (on) {
                         if (jRadioCvsGeral.isSelected()) {
                             msg = new Mensagem("LISTAR;MENSAGENS;GERAL;", "");
-                            msg.setId_remetente(jListClientes.getSelectedValue().getId());
+                            msg.setId_destinatario(jListClientes.getSelectedValue().getId());
 
                             ArrayList<Mensagem> list;
                             try {

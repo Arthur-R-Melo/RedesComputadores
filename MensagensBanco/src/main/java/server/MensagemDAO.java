@@ -41,7 +41,7 @@ public class MensagemDAO {
 
     public ArrayList<Mensagem> select(int id_conversa) {
         ArrayList<Mensagem> retorno = new ArrayList<>();
-        String sql = "SELECT M.id, M.texto, C.nome FROM mensagens M WHERE id_conversa = ? JOIN clientes C ON C.id = M.id_remetente ORDER BY id";
+        String sql = "SELECT M.id, M.texto, C.nome FROM mensagens M JOIN clientes C ON C.id = M.id_remetente WHERE id_conversa = ? ORDER BY id";
         try (PreparedStatement trans = c.prepareStatement(sql)) {
             trans.setInt(1, id_conversa);
 

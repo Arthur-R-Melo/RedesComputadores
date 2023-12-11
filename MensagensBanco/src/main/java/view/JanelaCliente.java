@@ -23,6 +23,7 @@ public class JanelaCliente extends javax.swing.JFrame {
     private SwingWorker esperaMensagensNovas;
 
     private boolean flag;
+    private boolean on = false;
 
     public JanelaCliente() {
         initComponents();
@@ -50,9 +51,10 @@ public class JanelaCliente extends javax.swing.JFrame {
             @Override
             protected Object doInBackground() throws Exception {
                 while (true) {
-                    if (jRadioOn.isSelected()) {
+                    if (on) {
                         Mensagem msg = new Mensagem("LISTAR;CLIENTES", "");
                         try {
+                            System.out.println(flag);
                             if (!flag) {
                                 flag = true;
                                 usuario.enviar_mensagem(msg);
@@ -69,14 +71,12 @@ public class JanelaCliente extends javax.swing.JFrame {
             }
         };
         this.esperaClientes.execute();
-        this.esperaClientes.wait();
         this.esperaMensagensNovas = new SwingWorker() {
             @Override
             protected Object doInBackground() throws Exception {
                 Mensagem msg;
                 while (true) {
-                    if (jRadioOn.isSelected()) {
-
+                    if (on) {
                         if (jRadioCvsGeral.isSelected()) {
                             msg = new Mensagem("LISTAR;MENSAGENS;GERAL;", "");
                             msg.setId_remetente(jListClientes.getSelectedValue().getId());
@@ -119,70 +119,12 @@ public class JanelaCliente extends javax.swing.JFrame {
             }
         };
         this.esperaMensagensNovas.execute();
-        this.esperaMensagensNovas.wait();
-
-        /*        this.esperaClientes = new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    if (jRadioOn.isSelected()) {
-                        Mensagem msg = new Mensagem("LISTAR;CLIENTES", "");
-                        try {
-                            atualizarClientes(usuario);
-                            Thread.sleep(15000);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                            JOptionPane.showMessageDialog(null, "Erro ao receber os clientes", "Erro", JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                }
-            }
-        };
-        this.esperaMensagensNovas = new Runnable() {
-            @Override
-            public void run() {
-                Mensagem msg;
-                while (true) {
-                    if (jRadioOn.isSelected()) {
-
-                        if (jListClientes.getSelectedIndex() != -1) {
-                            try {
-                                msg = new Mensagem("LISTAR;MENSAGENS;DIRETA;", "");
-                                msg.setId_remetente(jListClientes.getSelectedValue().getId());
-
-                                ArrayList<Mensagem> list = (ArrayList<Mensagem>) usuario.receber_mensagem();
-                                listaMensagens.clear();
-                                listaMensagens.addAll(list);
-                                Thread.sleep(2000);
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        } else if (jRadioCvsGeral.isSelected()) {
-                            msg = new Mensagem("LISTAR;GERAL;", "");
-                            msg.setId_remetente(jListClientes.getSelectedValue().getId());
-
-                            ArrayList<Mensagem> list;
-                            try {
-                                list = (ArrayList<Mensagem>) usuario.receber_mensagem();
-                                listaMensagens.clear();
-                                listaMensagens.addAll(list);
-                                Thread.sleep(2000);
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                        
-                    }
-                }
-            }
-       };       */
     }
 
     private void atualizarClientes(Cliente usuario) throws Exception {
         ArrayList<Cliente> clientes = (ArrayList<Cliente>) this.usuario.receber_mensagem();
         this.listaClientes.clear();
         this.listaClientes.addAll(clientes);
-        System.out.println("a");
     }
 
     private void esperaMsg() {
@@ -384,12 +326,12 @@ public class JanelaCliente extends javax.swing.JFrame {
             if (resposta.equalsIgnoreCase("ok")) {
                 this.atualizarClientes(usuario);
                 this.enableComponents(true);
-                this.esperaClientes.notify();
-                this.esperaMensagensNovas.notify();
             } else {
                 JOptionPane.showMessageDialog(this, "Esse usuário já está online");
                 this.jRadioOffActionPerformed(evt);
             }
+            
+            this.on = true;
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Falha ao conectar no servidor!", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -407,15 +349,13 @@ public class JanelaCliente extends javax.swing.JFrame {
                 this.jRadioOn.setSelected(false);
                 this.jRadioOff.setSelected(true);
             }
-            this.esperaClientes.wait();
-            this.esperaMensagensNovas.wait();
             this.usuario.finalizar();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Falha ao desconectar do servidor!", "Erro", JOptionPane.ERROR_MESSAGE);
 
-        } catch (InterruptedException ex) {
-            Logger.getLogger(JanelaCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        this.on = false;
     }//GEN-LAST:event_jRadioOffActionPerformed
 
     private void jButtonEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnviarActionPerformed

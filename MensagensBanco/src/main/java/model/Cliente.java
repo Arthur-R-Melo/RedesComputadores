@@ -77,6 +77,7 @@ public class Cliente implements Serializable{
 
     @Override
     public String toString() {
-        return this.nome;
+        String on = this.online ? "ON" : "OFF";
+        return this.nome + "[" + on + "]";
     }
 }

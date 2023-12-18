@@ -129,10 +129,18 @@ public class JanelaCliente extends javax.swing.JFrame {
         temp.addAll(clientes);
 
         if (this.listaClientes != temp) {
-            Cliente clienteSelecionado = this.jListClientes.getSelectedValue();         
+            long clienteSelecionado = this.jListClientes.getSelectedValue().getId();         
             this.listaClientes.clear();
             this.listaClientes.addAll(clientes);
-            int indice = this.listaClientes.indexOf(clienteSelecionado);
+            
+            int indice = -1;
+            for(Cliente it : clientes) {
+                if(it.getId() == clienteSelecionado) {
+                    indice = listaClientes.indexOf(it);
+                }
+            }
+            
+            
             this.jListClientes.setSelectedIndex(indice);
         }
 

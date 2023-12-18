@@ -337,7 +337,7 @@ public class JanelaCliente extends javax.swing.JFrame {
         try {
             // TODO add your handling code here
             String nome = this.jTextNome.getText();
-            this.usuario = new Cliente("10.90.37.77", 15500, nome);
+            this.usuario = new Cliente("10.90.37.57", 15500, nome);
 
             Mensagem msg = new Mensagem("ENTRAR;" + nome, "");
 

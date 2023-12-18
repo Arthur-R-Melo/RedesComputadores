@@ -37,7 +37,7 @@ public class ClienteDAO {
     public ArrayList<Cliente> selectAll() {
         ArrayList<Cliente> retorno = new ArrayList<>();
         
-        String sql = "SELECT nome, id, online FROM Clientes ORDER BY online";
+        String sql = "SELECT nome, id, online FROM Clientes ORDER BY online DESC";
         
         try(PreparedStatement trans = this.c.prepareStatement(sql)) {
             ResultSet resultado = trans.executeQuery();

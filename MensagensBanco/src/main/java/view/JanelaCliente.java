@@ -129,18 +129,20 @@ public class JanelaCliente extends javax.swing.JFrame {
         temp.addAll(clientes);
 
         if (this.listaClientes != temp) {
-            long clienteSelecionado = this.jListClientes.getSelectedValue().getId();         
+            Cliente client = this.jListClientes.getSelectedValue();
             this.listaClientes.clear();
             this.listaClientes.addAll(clientes);
-            
+
             int indice = -1;
-            for(Cliente it : clientes) {
-                if(it.getId() == clienteSelecionado) {
-                    indice = listaClientes.indexOf(it);
+            if (client != null) {
+                long clienteSelecionado = client.getId();
+                for (Cliente it : clientes) {
+                    if (it.getId() == clienteSelecionado) {
+                        indice = listaClientes.indexOf(it);
+                    }
                 }
             }
-            
-            
+
             this.jListClientes.setSelectedIndex(indice);
         }
 
@@ -353,7 +355,8 @@ public class JanelaCliente extends javax.swing.JFrame {
             this.on = true;
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Falha ao conectar no servidor!", "Erro", JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(this, "Falha ao conectar no servidor!", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
             this.jRadioOffActionPerformed(evt);
         }

@@ -3,6 +3,7 @@ package view;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +24,7 @@ public class JanelaCliente extends javax.swing.JFrame {
     private SwingWorker esperaMensagensNovas;
 
     private boolean flag;
+    private Semaphore semaphore;
     private boolean on = false;
 
     public JanelaCliente() {
@@ -35,6 +37,7 @@ public class JanelaCliente extends javax.swing.JFrame {
     }
 
     private void config() throws InterruptedException {
+        this.semaphore = new Semaphore(1);
         this.flag = false;
         this.enableComponents(false);
         this.setLocationRelativeTo(null);
@@ -55,17 +58,15 @@ public class JanelaCliente extends javax.swing.JFrame {
                     if (on) {
                         Mensagem msg = new Mensagem("LISTAR;CLIENTES", "");
                         try {
-                            System.out.println(flag);
-                            if (!flag) {
-                                flag = true;
-                                usuario.enviar_mensagem(msg);
-                                atualizarClientes(usuario);
-                                flag = false;
-                                Thread.sleep(500);
-                            }
+                            semaphore.acquire();
+                            usuario.enviar_mensagem(msg);
+                            atualizarClientes(usuario);
+                            Thread.sleep(500);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             JOptionPane.showMessageDialog(null, "Erro ao receber os clientes", "Erro", JOptionPane.ERROR_MESSAGE);
+                        } finally {
+                            semaphore.release();
                         }
                     }
                 }
@@ -84,18 +85,17 @@ public class JanelaCliente extends javax.swing.JFrame {
 
                             ArrayList<Mensagem> list;
                             try {
-                                if (!flag) {
-                                    flag = true;
-                                    usuario.enviar_mensagem(msg);
-                                    list = (ArrayList<Mensagem>) usuario.receber_mensagem();
-                                    listaMensagens.clear();
-                                    listaMensagens.addAll(list);
-                                    flag = false;
-                                    Thread.sleep(500);
-                                }
+                                semaphore.acquire();
+                                usuario.enviar_mensagem(msg);
+                                list = (ArrayList<Mensagem>) usuario.receber_mensagem();
+                                listaMensagens.clear();
+                                listaMensagens.addAll(list);
+                                Thread.sleep(500);
                             } catch (Exception ex) {
                                 System.out.println(ex.getMessage());
                                 ex.printStackTrace();
+                            } finally {
+                                semaphore.release();
                             }
                         } else if (jListClientes.getSelectedIndex() != -1) {
                             try {

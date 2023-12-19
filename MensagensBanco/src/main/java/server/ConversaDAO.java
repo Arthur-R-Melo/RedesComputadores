@@ -22,7 +22,7 @@ public class ConversaDAO {
     }
     
     public int select(int id_remetente, int id_destinatario) {
-        String sql = "SELECT id FROM conversa WHERE cliente1 = ? AND cliente2 = ? OR cliente1 = ? AND cliente2 = ?";
+        String sql = "SELECT id FROM arthur_ribeiro.conversa WHERE cliente1 = ? AND cliente2 = ? OR cliente1 = ? AND cliente2 = ?";
         
         try(PreparedStatement trans = c.prepareStatement(sql)) {
             trans.setInt(1, id_remetente);
@@ -46,7 +46,7 @@ public class ConversaDAO {
     }
     
     public int insert(int id_remetente, int id_destinatario) {
-        String sql = "INSERT INTO conversa(cliente1,cliente2) VALUES (?,?) returning id";
+        String sql = "INSERT INTO arthur_ribeiro.conversa(cliente1,cliente2) VALUES (?,?) returning id";
         
         try(PreparedStatement trans = c.prepareStatement(sql)){
             trans.setInt(1, id_remetente);

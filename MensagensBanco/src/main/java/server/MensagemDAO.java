@@ -19,7 +19,7 @@ public class MensagemDAO {
     }
 
     public boolean insert(Mensagem mensagem) {
-        String sql = "INSERT INTO mensagens(texto, id_remetente, id_conversa) VALUES (?,?,?) returning id";
+        String sql = "INSERT INTO arthur_ribeiro.mensagens(texto, id_remetente, id_conversa) VALUES (?,?,?) returning id";
         try (PreparedStatement trans = c.prepareStatement(sql)) {
             trans.setString(1, mensagem.getTexto());
             trans.setInt(2, (int) mensagem.getId_remetente());
@@ -42,7 +42,7 @@ public class MensagemDAO {
 
     public ArrayList<Mensagem> select(int id_conversa) {
         ArrayList<Mensagem> retorno = new ArrayList<>();
-        String sql = "SELECT M.id, M.texto, C.nome FROM mensagens M JOIN clientes C ON C.id = M.id_remetente WHERE id_conversa = ? ORDER BY id";
+        String sql = "SELECT M.id, M.texto, C.nome FROM arthur_ribeiro.mensagens M JOIN arthur_ribeiro.clientes C ON C.id = M.id_remetente WHERE id_conversa = ? ORDER BY id";
         try (PreparedStatement trans = c.prepareStatement(sql)) {
             trans.setInt(1, id_conversa);
 
@@ -65,7 +65,7 @@ public class MensagemDAO {
 
     public ArrayList<Mensagem> select() {
         ArrayList<Mensagem> retorno = new ArrayList<>();
-        String sql = "SELECT M.id, M.texto, C.nome FROM mensagens M JOIN clientes C ON C.id = M.id_remetente WHERE id_conversa = 0 ORDER BY id";
+        String sql = "SELECT M.id, M.texto, C.nome FROM arthur_ribeiro.mensagens M JOIN arthur_ribeiro.clientes C ON C.id = M.id_remetente WHERE id_conversa = 0 ORDER BY id";
         try (PreparedStatement trans = c.prepareStatement(sql)) {
             ResultSet resultado = trans.executeQuery();
 

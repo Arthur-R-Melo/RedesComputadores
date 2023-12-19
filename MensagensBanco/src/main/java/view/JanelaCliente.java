@@ -59,14 +59,16 @@ public class JanelaCliente extends javax.swing.JFrame {
                         Mensagem msg = new Mensagem("LISTAR;CLIENTES", "");
                         try {
                             semaphore.acquire();
-                            usuario.enviar_mensagem(msg);
-                            atualizarClientes(usuario);
-                            Thread.sleep(500);
+                            if (on) {
+                                usuario.enviar_mensagem(msg);
+                                atualizarClientes(usuario);
+                            }
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             JOptionPane.showMessageDialog(null, "Erro ao receber os clientes", "Erro", JOptionPane.ERROR_MESSAGE);
                         } finally {
                             semaphore.release();
+                            Thread.sleep(500);
                         }
                     }
                 }
@@ -86,33 +88,36 @@ public class JanelaCliente extends javax.swing.JFrame {
                             ArrayList<Mensagem> list;
                             try {
                                 semaphore.acquire();
-                                usuario.enviar_mensagem(msg);
-                                list = (ArrayList<Mensagem>) usuario.receber_mensagem();
-                                listaMensagens.clear();
-                                listaMensagens.addAll(list);
-                                Thread.sleep(500);
+                                if (on) {
+                                    usuario.enviar_mensagem(msg);
+                                    list = (ArrayList<Mensagem>) usuario.receber_mensagem();
+                                    listaMensagens.clear();
+                                    listaMensagens.addAll(list);
+                                }
                             } catch (Exception ex) {
                                 System.out.println(ex.getMessage());
                                 ex.printStackTrace();
                             } finally {
                                 semaphore.release();
+                                Thread.sleep(500);
                             }
                         } else if (jListClientes.getSelectedIndex() != -1) {
                             try {
                                 msg = new Mensagem("LISTAR;MENSAGENS;DIRETA;", "");
                                 msg.setId_destinatario(jListClientes.getSelectedValue().getId());
 
-                                if (!flag) {
-                                    flag = true;
+                                semaphore.acquire();
+                                if (on) {
                                     usuario.enviar_mensagem(msg);
                                     ArrayList<Mensagem> list = (ArrayList<Mensagem>) usuario.receber_mensagem();
                                     listaMensagens.clear();
                                     listaMensagens.addAll(list);
-                                    flag = false;
-                                    Thread.sleep(500);
                                 }
                             } catch (Exception ex) {
                                 ex.printStackTrace();
+                            } finally {
+                                semaphore.release();
+                                Thread.sleep(500);
                             }
                         }
 
@@ -337,11 +342,13 @@ public class JanelaCliente extends javax.swing.JFrame {
         try {
             // TODO add your handling code here
             String nome = this.jTextNome.getText();
-            this.usuario = new Cliente("10.90.37.57", 15500, nome);
+            this.usuario = new Cliente("10.90.37.77", 15500, nome);
 
             Mensagem msg = new Mensagem("ENTRAR;" + nome, "");
 
+            semaphore.acquire();
             this.usuario.enviar_mensagem(msg);
+            semaphore.release();
 
             String resposta = (String) this.usuario.receber_mensagem();
             if (resposta.equalsIgnoreCase("ok")) {
@@ -386,7 +393,9 @@ public class JanelaCliente extends javax.swing.JFrame {
                 String txt = this.jTextEnvio.getText();
                 Mensagem msg = new Mensagem("ENVIAR;", txt);
                 msg.setId_destinatario(jRadioCvsGeral.isSelected() ? 0 : this.jListClientes.getSelectedValue().getId());
+                semaphore.acquire();
                 this.usuario.enviar_mensagem(msg);
+                semaphore.release();
                 this.jTextEnvio.setText("");
                 //String resposta = (String) this.usuario.receber_mensagem();
 
@@ -413,8 +422,9 @@ public class JanelaCliente extends javax.swing.JFrame {
                 while (flag) {
 
                 }
-                flag = true;
+                semaphore.acquire();
                 this.usuario.enviar_mensagem(msg);
+                semaphore.release();
                 this.esperaMsg();
                 flag = false;
             } catch (Exception ex) {

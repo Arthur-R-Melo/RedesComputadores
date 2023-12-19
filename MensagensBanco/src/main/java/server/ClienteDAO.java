@@ -18,7 +18,7 @@ public class ClienteDAO {
     
     
     public boolean insert(Cliente cliente) {
-        String sql = "INSERT INTO Clientes(nome, online) VALUES (?,?) returning id";
+        String sql = "INSERT INTO arthur_ribeiro.Clientes(nome, online) VALUES (?,?) returning id";
         
         try(PreparedStatement trans = this.c.prepareStatement(sql)){
             trans.setString(1, cliente.getNome());
@@ -37,7 +37,7 @@ public class ClienteDAO {
     public ArrayList<Cliente> selectAll() {
         ArrayList<Cliente> retorno = new ArrayList<>();
         
-        String sql = "SELECT nome, id, online FROM Clientes ORDER BY online DESC";
+        String sql = "SELECT nome, id, online FROM arthur_ribeiro.Clientes ORDER BY online DESC";
         
         try(PreparedStatement trans = this.c.prepareStatement(sql)) {
             ResultSet resultado = trans.executeQuery();
@@ -60,7 +60,7 @@ public class ClienteDAO {
     
     public Cliente selectByName(String name) {
         Cliente retorno;
-        String sql = "SELECT nome, id, online FROM Clientes WHERE nome = ?";
+        String sql = "SELECT nome, id, online FROM arthur_ribeiro.Clientes WHERE nome = ?";
         try(PreparedStatement trans = this.c.prepareStatement(sql)) {
             trans.setString(1, name);
             
@@ -83,7 +83,7 @@ public class ClienteDAO {
     
     public Cliente selectById(int id) {
         Cliente retorno;
-        String sql = "SELECT nome, id, online FROM Clientes WHERE id = ?";
+        String sql = "SELECT nome, id, online FROM arthur_ribeiro.Clientes WHERE id = ?";
         try(PreparedStatement trans = this.c.prepareStatement(sql)) {
             trans.setInt(1, id);
             
@@ -105,7 +105,7 @@ public class ClienteDAO {
     }
     
     public boolean setOnline(boolean online, long id) {
-        String sql = "UPDATE Clientes SET online = ? WHERE id = ?";
+        String sql = "UPDATE arthur_ribeiro.Clientes SET online = ? WHERE id = ?";
         
         try(PreparedStatement trans = this.c.prepareStatement(sql)) {
             trans.setBoolean(1, online);

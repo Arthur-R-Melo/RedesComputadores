@@ -354,12 +354,13 @@ public class JanelaCliente extends javax.swing.JFrame {
             if (resposta.equalsIgnoreCase("ok")) {
                 this.atualizarClientes(usuario);
                 this.enableComponents(true);
+                this.on = true;
             } else {
                 JOptionPane.showMessageDialog(this, "Esse usuário já está online");
                 this.jRadioOffActionPerformed(evt);
             }
 
-            this.on = true;
+            
 
         } catch (Exception ex) {
 //            JOptionPane.showMessageDialog(this, "Falha ao conectar no servidor!", "Erro", JOptionPane.ERROR_MESSAGE);

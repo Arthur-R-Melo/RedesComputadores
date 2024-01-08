@@ -420,14 +420,10 @@ public class JanelaCliente extends javax.swing.JFrame {
         if (this.jRadioCvsGeral.isSelected()) {
             try {
                 Mensagem msg = new Mensagem("LISTAR;MENSAGENS;GERAL", "");
-                while (flag) {
-
-                }
                 semaphore.acquire();
                 this.usuario.enviar_mensagem(msg);
-                semaphore.release();
                 this.esperaMsg();
-                flag = false;
+                semaphore.release();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
